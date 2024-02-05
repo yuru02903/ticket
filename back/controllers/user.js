@@ -1,4 +1,4 @@
-import users from '../models/users'
+import users from '../models/users.js'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
 
@@ -53,6 +53,9 @@ export const login = async (req, res) => {
       }
     })
   } catch (error) {
-
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
   }
 }
