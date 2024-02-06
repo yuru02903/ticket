@@ -1,4 +1,3 @@
 <template lang="pug">
-VApp
-  RouterView
+VAppBar(color="primary")
 </template>

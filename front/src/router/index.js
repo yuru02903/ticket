@@ -1,26 +1,47 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default/Default.vue'),
+    component: () => import('@/layouts/FrontLayout.vue'),
     children: [
       {
         path: '',
         name: 'Home',
-        // route level code-splitting
-        // this generates a separate chunk (Home-[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import('@/views/Home.vue'),
+        component: () => import('@/views/front/HomeView.vue'),
+        meta: {
+          title: 'Ticket? Take it!'
+        }
       },
-    ],
-  },
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import('@/views/front/RegisterView.vue'),
+        meta: {
+          title: 'Ticket? Take it! - 註冊'
+        }
+      }
+      // {
+      //   path: 'login',
+      //   name: 'Login',
+      //   component: () => import('@/views/front/LoginView.vue'),
+      //   meta: {
+      //     title: 'Ticket? Take it! - 登入'
+      //   }
+      // },
+    ]
+  }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+  history: createWebHashHistory(process.env.BASE_URL),
+  routes
+})
+
+// 進到每頁後執行 function => 修改瀏覽器標題
+router.afterEach((to, from) => {
+  document.title = to.meta.title
 })
 
 export default router
