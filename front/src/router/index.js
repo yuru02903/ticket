@@ -11,15 +11,31 @@ const routes = [
         name: 'Home',
         component: () => import('@/views/front/HomeView.vue'),
         meta: {
-          title: 'Ticket? Take it!'
+          title: 'GoConcert'
         }
       },
       {
-        path: 'register',
-        name: 'Register',
-        component: () => import('@/views/front/RegisterView.vue'),
+        path: 'tickets',
+        name: 'Tickets',
+        component: () => import('@/views/front/TicketsView.vue'),
         meta: {
-          title: 'Ticket? Take it! - 註冊'
+          title: 'GoConcert - 票券交流'
+        }
+      },
+      {
+        path: 'concerts',
+        name: 'Concerts',
+        component: () => import('@/views/front/ConcertsView.vue'),
+        meta: {
+          title: 'GoConcert - 近期演出'
+        }
+      },
+      {
+        path: 'seats',
+        name: 'Seats',
+        component: () => import('@/components/RegisterView.vue'),
+        meta: {
+          title: 'GoConcert - 座位視野'
         }
       }
       // {
@@ -27,7 +43,7 @@ const routes = [
       //   name: 'Login',
       //   component: () => import('@/views/front/LoginView.vue'),
       //   meta: {
-      //     title: 'Ticket? Take it! - 登入'
+      //     title: 'GoConcert - 登入'
       //   }
       // },
     ]
