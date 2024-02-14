@@ -1,42 +1,48 @@
 <template>
   <v-toolbar color="basil text-basil" title="註冊" ></v-toolbar>
-  <v-container class="px-8 py-6">
+  <v-container class="px-8 py-12">
     <v-row>
-      <v-col>
-        <v-form :disabled="isSubmitting" @submit.prevent="submit" >
+      <v-col >
+        <v-form :disabled="isSubmitting" @submit.prevent="submit" style="text-align: center;">
           <v-text-field
+            class="mb-2"
             label="帳號" minlength="4" maxlength="20" counter
-            hint="請輸入4 ~ 20個英數字" variant="solo"
+            hint="請輸入4 ~ 20個英數字，區分大小寫" variant="filled"
             prepend-inner-icon="mdi-account-circle-outline"
             v-model="account.value.value"
             :error-messages="account.errorMessage.value">
           </v-text-field>
           <v-text-field
+            class="mb-2"
             label="身分證" minlength="10" maxlength="10" counter
-            type="password" variant="solo"
+            type="password" variant="filled"
             prepend-inner-icon="mdi-card-account-details-outline"
             v-model="nationalIdNumber.value.value"
             :error-messages="nationalIdNumber.errorMessage.value">
           </v-text-field>
-          <v-text-field label="電子信箱" type="email" variant="solo"
+          <v-text-field
+            class="mb-2"
+            label="電子信箱" type="email" variant="filled"
             prepend-inner-icon="mdi-email-outline"
             v-model="email.value.value"
             :error-messages="email.errorMessage.value">
           </v-text-field>
           <v-text-field
+            class="mb-2"
             label="密碼" minlength="8" maxlength="20" counter
-            hint="請輸入8 ~ 20個英數字" type="password" variant="solo"
+            hint="請輸入8 ~ 20個英數字，區分大小寫" type="password" variant="filled"
             prepend-inner-icon="mdi-lock-outline"
             v-model="password.value.value"
             :error-messages="password.errorMessage.value">
           </v-text-field>
           <v-text-field
-            label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="solo"
+            class="mb-2"
+            label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="filled"
             prepend-inner-icon="mdi-lock"
             v-model="passwordConfirm.value.value"
             :error-messages="passwordConfirm.errorMessage.value">
           </v-text-field>
-          <v-btn type="submit" color="basil">註冊</v-btn>
+          <v-btn type="submit" color="basil" width="90%">註冊</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -54,12 +60,14 @@ import {
   // isEInvoiceCellPhoneBarcodeValid, // 手機條碼
   // isCreditCardNumberValid // 信用卡
 } from 'taiwan-id-validator'
-import { api } from '@/plugins/axios'
 // { useRoute } => 取得此頁資訊; { useRouter } => 跳頁
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useSnackbar } from 'vuetify-use-dialog'
+import { useApi } from '@/composables/axios'
 
-const router = useRouter()
+const { api } = useApi()
+
+// const router = useRouter()
 const createSnackbar = useSnackbar()
 
 // 定義註冊表單的資料格式

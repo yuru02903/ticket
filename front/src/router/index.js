@@ -1,5 +1,6 @@
 // Composables
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { useUserStore } from '@/store/user'
 
 const routes = [
   {
@@ -11,15 +12,9 @@ const routes = [
         name: 'Home',
         component: () => import('@/views/front/HomeView.vue'),
         meta: {
-          title: 'GoConcert'
-        }
-      },
-      {
-        path: 'tickets',
-        name: 'Tickets',
-        component: () => import('@/views/front/TicketsView.vue'),
-        meta: {
-          title: 'GoConcert - 票券交流'
+          title: 'GoConcert',
+          login: false,
+          admin: false
         }
       },
       {
@@ -27,25 +22,57 @@ const routes = [
         name: 'Concerts',
         component: () => import('@/views/front/ConcertsView.vue'),
         meta: {
-          title: 'GoConcert - 近期演出'
+          title: 'GoConcert - 近期演出',
+          login: false,
+          admin: false
+        }
+      },
+      {
+        path: 'tickets',
+        name: 'Tickets',
+        component: () => import('@/views/front/TicketsView.vue'),
+        meta: {
+          title: 'GoConcert - 票券交流',
+          login: false,
+          admin: false
         }
       },
       {
         path: 'seats',
         name: 'Seats',
-        component: () => import('@/components/RegisterView.vue'),
+        component: () => import('@/components/SeatsView.vue'),
         meta: {
-          title: 'GoConcert - 座位視野'
+          title: 'GoConcert - 座位視野',
+          login: false,
+          admin: false
+        }
+      },
+      {
+        path: 'articles',
+        name: 'Articles',
+        component: () => import('@/components/ArticlesView.vue'),
+        meta: {
+          title: 'GoConcert - 討論專區',
+          login: false,
+          admin: false
         }
       }
-      // {
-      //   path: 'login',
-      //   name: 'Login',
-      //   component: () => import('@/views/front/LoginView.vue'),
-      //   meta: {
-      //     title: 'GoConcert - 登入'
-      //   }
-      // },
+    ]
+  },
+  {
+    path: '/member',
+    component: () => import('@/layouts/MemberLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Member',
+        component: () => import('@/views/front/HomeView.vue'),
+        meta: {
+          title: 'GoConcert - 會員專區',
+          login: false,
+          admin: false
+        }
+      }
     ]
   }
 ]
@@ -58,6 +85,21 @@ const router = createRouter({
 // 進到每頁後執行 function => 修改瀏覽器標題
 router.afterEach((to, from) => {
   document.title = to.meta.title
+})
+
+router.beforeEach(async (to, from, next) => {
+  const user = useUserStore()
+
+  // 如果沒有登入，要去會員專區，重新導向回首頁
+  if (!user.isLogin && ['/member'].includes(to.path)) {
+    next('/')
+  } else if (to.meta.admin && !user.isAdmin) {
+    // 如果要去的頁面要管理員，但是不是管理員，重新導向回首頁
+    next('/')
+  } else {
+    // 不重新導向
+    next()
+  }
 })
 
 export default router

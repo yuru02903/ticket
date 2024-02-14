@@ -2,10 +2,12 @@ import users from '../models/users.js'
 import { StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
 
-// 建立使用者
+// 註冊
 export const create = async (req, res) => {
   try {
+    // 建立使用者 => 將請求來源內容依schema建立資料
     await users.create(req.body)
+    // 成功通知
     res.status(StatusCodes.OK).json({
       success: true,
       message: ''
@@ -33,7 +35,7 @@ export const create = async (req, res) => {
   }
 }
 
-// 登入資料
+// 登入 (給予 token 並回傳該使用者的相關資訊)
 export const login = async (req, res) => {
   try {
     // jwt.sign(保存對象的id, 密鑰, 保存期限)
@@ -48,6 +50,69 @@ export const login = async (req, res) => {
       result: {
         token,
         account: req.user.account,
+        nationalIdNumber: req.user.nationalIdNumber,
+        email: req.user.email,
+        role: req.user.role
+      }
+    })
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+
+// 登出 (清除請求來源的token)
+export const logout = async (req, res) => {
+  try {
+    // 過濾出這次請求token以外的tokens後儲存 = 刪掉請求token
+    req.tokens = req.user.tokens.filter(token => token !== req.token)
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: ''
+    })
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+
+// token舊換新
+export const extend = async (req, res) => {
+  try {
+    // 取得這次請求的id
+    const idx = req.user.tokens.findIndex(token => token === req.token)
+    // 設定新的token
+    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+    // 替換token
+    req.user.tokens[idx] = token
+    // 儲存新的 token，完成舊換新
+    await req.user.save()
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: token
+    })
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: '未知錯誤'
+    })
+  }
+}
+
+export const getProfile = (req, res) => {
+  try {
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: {
+        account: req.user.account,
+        nationalIdNumber: req.user.nationalIdNumber,
         email: req.user.email,
         role: req.user.role
       }
