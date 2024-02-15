@@ -74,8 +74,8 @@
 
     <v-dialog v-model="login" width="35%" min-width="400px" >
       <v-card>
-        <LoginView></LoginView>
-        <!-- <RegisterView></RegisterView> -->
+        <!-- <LoginView></LoginView> -->
+        <RegisterView></RegisterView>
       </v-card>
     </v-dialog>
   </v-card>
