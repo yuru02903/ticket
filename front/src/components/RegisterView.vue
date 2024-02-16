@@ -1,9 +1,11 @@
-<template>
-  <v-toolbar color="basil text-basil" title="註冊" ></v-toolbar>
-  <v-container class="px-8 py-12">
+<template class="rounded-xl">
+  <v-container class="px-8 py-12 rounded-xl">
     <v-row>
+      <v-col class="text-mainColor" cols="12">
+        <h1> 註冊 </h1>
+      </v-col>
       <v-col >
-        <v-form :disabled="isSubmitting" @submit.prevent="submit" style="text-align: center;">
+        <v-form :disabled="isSubmitting" @submit.prevent="submit" >
           <v-text-field
             class="mb-2"
             label="帳號" minlength="4" maxlength="20" counter
@@ -42,7 +44,7 @@
             v-model="passwordConfirm.value.value"
             :error-messages="passwordConfirm.errorMessage.value">
           </v-text-field>
-          <v-btn type="submit" color="basil" width="90%">註冊</v-btn>
+          <v-btn type="submit" color="mainColor" width="100%">註冊</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -64,6 +66,7 @@ import {
 // import { useRouter } from 'vue-router'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useApi } from '@/composables/axios'
+import { useUserStore } from '@/store/user'
 
 const { api } = useApi()
 
@@ -123,6 +126,8 @@ const email = useField('email')
 const password = useField('password')
 const passwordConfirm = useField('passwordConfirm')
 
+const user = useUserStore()
+
 const submit = handleSubmit(async (value) => {
   try {
     await api.post('/users', {
@@ -131,8 +136,13 @@ const submit = handleSubmit(async (value) => {
       email: value.email,
       password: value.password
     })
+    const { data } = await api.post('/users/login', {
+      email: value.email,
+      password: value.password
+    })
+    user.login(data.result)
     createSnackbar({
-      text: '註冊成功',
+      text: '註冊成功，已登入',
       showCloseButton: false,
       snackbarProps: {
         timeout: 2000,

@@ -56,6 +56,16 @@ const routes = [
           login: false,
           admin: false
         }
+      },
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('@/components/LoginView.vue'),
+        meta: {
+          title: 'GoConcert - 登入',
+          login: false,
+          admin: false
+        }
       }
     ]
   },

@@ -1,11 +1,11 @@
 <template>
-  <v-card color="basil">
+  <v-card color="mainColor">
     <!-- 手機板 -->
     <template v-if="isMobile">
       <!-- logo + 摺疊按鈕 -->
       <v-card-title class="text-center justify-center align-center py-3 bb d-flex">
         <v-card-actions>
-          <v-btn class="font-weight-bold text-h3 text-basil" height="100%" to="/" :active="false">GoConcert</v-btn>
+          <v-btn class="font-weight-bold text-h3 text-mainColor" height="100%" to="/" :active="false">GoConcert</v-btn>
         </v-card-actions>
         <v-spacer></v-spacer>
         <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
@@ -13,12 +13,14 @@
       <!-- 導覽列 -->
       <v-navigation-drawer v-model="drawer" location="right">
         <v-list>
-          <v-list-item @click="login = true" v-if="!user.isLogin">
-            <template #prepend>
-              <v-icon icon="mdi-login"></v-icon>
-            </template>
+          <template v-if="!user.isLogin">
+            <v-list-item to='/login'>
+              <template #prepend>
+                <v-icon icon="mdi-login"></v-icon>
+              </template>
               <v-list-item-title> 登入/註冊 </v-list-item-title>
-          </v-list-item>
+            </v-list-item>
+          </template>
           <template v-for="item in navItems" :key="item.to">
             <v-list-item :to="item.to">
               <template #prepend>
@@ -36,14 +38,14 @@
       <!-- logo -->
       <v-card-title class="text-center justify-center py-3 bb d-flex">
         <v-card-actions>
-          <v-btn class="font-weight-bold text-h3 text-basil" height="100%" to="/" :active="false">GoConcert</v-btn>
+          <v-btn class="font-weight-bold text-h3 text-mainColor" height="100%" to="/" :active="false">GoConcert</v-btn>
         </v-card-actions>
       </v-card-title>
       <!-- 導覽列 -->
       <v-tabs
           v-model="tab"
           bg-color="transparent"
-          color="basil"
+          color="mainColor"
           grow
           class="align-center"
           :active="false"
@@ -60,9 +62,37 @@
             {{ item.text }}
           </v-tab>
         </template>
-        <v-tab prepend-icon="mdi-login" @click="login = true" v-if="!user.isLogin"> 登入/註冊 </v-tab>
-        <!-- <v-btn prepend-icon="mdi-login" v-if="!user.isLogin" @click="login"></v-btn>
-        <v-btn prepend-icon="mdi-logout" v-else @click="logout"></v-btn> -->
+        <v-tab prepend-icon="mdi-login" @click="dialog = true" v-if="!user.isLogin"> 登入/註冊 
+          <v-dialog v-model="dialog" width="60%" min-width="700px" transition="dialog-top-transition">
+            <v-card class="rounded-xl">
+              <v-window v-model="step">
+                <v-window-item :value="1" class="bg-white">
+                  <v-row >
+                    <v-col cols="9">
+                      <LoginView></LoginView>
+                    </v-col>
+                    <v-col cols="3" style="text-align: center; align-items: center;" class="align-center justify-center bg-mainColor " >
+                      <h2>尚未註冊?</h2>
+                      <v-btn @click="step++" variant="outlined"> 註冊 </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-window-item>
+  
+                <v-window-item :value="2" class="bg-white position-relative">
+                  <v-row>
+                    <v-col cols="3" position-absolute style="text-align: center; align-items: center;" class="align-center justify-center bg-mainColor " >
+                      <h2>已經註冊?</h2>
+                      <v-btn @click="step--" variant="outlined" >登入</v-btn>
+                    </v-col>
+                    <v-col cols="9">
+                      <RegisterView></RegisterView>
+                    </v-col>
+                  </v-row>
+                </v-window-item>
+              </v-window>
+            </v-card>
+          </v-dialog>
+        </v-tab>
       </v-tabs>
     </template>
 
@@ -72,12 +102,7 @@
       </v-main>
     </v-window>
 
-    <v-dialog v-model="login" width="35%" min-width="400px" >
-      <v-card>
-        <!-- <LoginView></LoginView> -->
-        <RegisterView></RegisterView>
-      </v-card>
-    </v-dialog>
+
   </v-card>
 </template>
 
@@ -111,7 +136,9 @@ const navItems = computed(() => {
 
 const tab = ref(false)
 
-const login = ref(false)
+const dialog = ref(false)
+
+const step = ref(1)
 </script>
 <style>
 * {
@@ -123,10 +150,10 @@ a {
   color: black;
 }
 
-.bg-basil {
+.bg-mainColor {
   background-color: #FFFBE6 !important;
 }
-.text-basil {
+.text-mainColor {
   color: #e76813 !important;
 }
 

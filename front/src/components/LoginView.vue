@@ -1,8 +1,10 @@
 <template>
-  <v-toolbar color="basil text-basil" title="登入" ></v-toolbar>
   <v-container class="px-8 py-6">
     <v-row>
-      <v-col>
+      <v-col class="text-mainColor" cols="12">
+        <h1> 登入 </h1>
+      </v-col>
+      <v-col cols="12">
         <v-form :disabled="isSubmitting" @submit.prevent="submit" >
           <v-text-field label="電子信箱" type="email" variant="solo"
             prepend-inner-icon="mdi-email-outline"
@@ -16,7 +18,7 @@
             v-model="password.value.value"
             :error-messages="password.errorMessage.value">
           </v-text-field>
-          <v-btn type="submit" color="basil">登入</v-btn>
+          <v-btn width="100%" type="submit" color="mainColor">登入</v-btn>
         </v-form>
       </v-col>
     </v-row>
@@ -29,13 +31,13 @@ import validator from 'validator'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 // { useRoute } => 取得此頁資訊; { useRouter } => 跳頁
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useApi } from '@/composables/axios'
 import { useUserStore } from '@/store/user'
 
 const { api } = useApi()
-const router = useRouter()
+// const router = useRouter()
 const createSnackbar = useSnackbar()
 const user = useUserStore()
 
@@ -82,7 +84,6 @@ const submit = handleSubmit(async (value) => {
         location: 'top'
       }
     })
-    router.push('/')
   } catch (error) {
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({
