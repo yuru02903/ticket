@@ -1,6 +1,6 @@
 <template class="rounded-xl">
-  <v-container class="px-8 py-12 rounded-xl">
-    <v-row>
+  <v-container class="px-8 py-12">
+    <v-row >
       <v-col class="text-mainColor" cols="12">
         <h1> 註冊 </h1>
       </v-col>
@@ -9,38 +9,38 @@
           <v-text-field
             class="mb-2"
             label="帳號" minlength="4" maxlength="20" counter
-            hint="請輸入4 ~ 20個英數字，區分大小寫" variant="filled"
-            prepend-inner-icon="mdi-account-circle-outline"
+            hint="請輸入4 ~ 20個英數字，區分大小寫" variant="underlined"
+            prepend-icon="mdi-account-circle-outline"
             v-model="account.value.value"
             :error-messages="account.errorMessage.value">
           </v-text-field>
           <v-text-field
             class="mb-2"
             label="身分證" minlength="10" maxlength="10" counter
-            type="password" variant="filled"
-            prepend-inner-icon="mdi-card-account-details-outline"
+            type="password" variant="underlined"
+            prepend-icon="mdi-card-account-details-outline"
             v-model="nationalIdNumber.value.value"
             :error-messages="nationalIdNumber.errorMessage.value">
           </v-text-field>
           <v-text-field
             class="mb-2"
-            label="電子信箱" type="email" variant="filled"
-            prepend-inner-icon="mdi-email-outline"
+            label="電子信箱" type="email" variant="underlined"
+            prepend-icon="mdi-email-outline"
             v-model="email.value.value"
             :error-messages="email.errorMessage.value">
           </v-text-field>
           <v-text-field
             class="mb-2"
             label="密碼" minlength="8" maxlength="20" counter
-            hint="請輸入8 ~ 20個英數字，區分大小寫" type="password" variant="filled"
-            prepend-inner-icon="mdi-lock-outline"
+            hint="請輸入8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
+            prepend-icon="mdi-lock-outline"
             v-model="password.value.value"
             :error-messages="password.errorMessage.value">
           </v-text-field>
           <v-text-field
             class="mb-2"
-            label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="filled"
-            prepend-inner-icon="mdi-lock"
+            label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="underlined"
+            prepend-icon="mdi-lock"
             v-model="passwordConfirm.value.value"
             :error-messages="passwordConfirm.errorMessage.value">
           </v-text-field>

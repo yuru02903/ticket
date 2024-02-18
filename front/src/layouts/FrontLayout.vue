@@ -13,14 +13,18 @@
       <!-- 導覽列 -->
       <v-navigation-drawer v-model="drawer" location="right">
         <v-list>
-          <template v-if="!user.isLogin">
-            <v-list-item to='/login'>
-              <template #prepend>
-                <v-icon icon="mdi-login"></v-icon>
-              </template>
-              <v-list-item-title> 登入/註冊 </v-list-item-title>
-            </v-list-item>
-          </template>
+          <v-list-item v-if="!user.isLogin" to='/login'>
+            <template #prepend>
+              <v-icon icon="mdi-login"></v-icon>
+            </template>
+            <v-list-item-title> 登入/註冊 </v-list-item-title>
+          </v-list-item>
+          <v-list-item v-if="user.isLogin" @click="logout">
+            <template #prepend>
+              <v-icon icon="mdi-logout"></v-icon>
+            </template>
+            <v-list-item-title> 登出 </v-list-item-title>
+          </v-list-item>
           <template v-for="item in navItems" :key="item.to">
             <v-list-item :to="item.to">
               <template #prepend>
@@ -47,7 +51,6 @@
           bg-color="transparent"
           color="mainColor"
           grow
-          class="align-center"
           :active="false"
         >
         <template
@@ -55,32 +58,31 @@
           :key="item.to">
           <v-tab
             :to="item.to"
-            :value="item.text"
             :prepend-icon="item.icon"
             :active="false"
           >
             {{ item.text }}
           </v-tab>
         </template>
-        <v-tab prepend-icon="mdi-login" @click="dialog = true" v-if="!user.isLogin"> 登入/註冊 
-          <v-dialog v-model="dialog" width="60%" min-width="700px" transition="dialog-top-transition">
+        <v-btn height="100%" variant="text" prepend-icon="mdi-login" @click="login = true" v-if="!user.isLogin"> 登入/註冊
+          <v-dialog v-model="login" width="60%" min-width="600px" transition="dialog-top-transition">
             <v-card class="rounded-xl">
               <v-window v-model="step">
                 <v-window-item :value="1" class="bg-white">
-                  <v-row >
+                  <v-row class="ma-0">
                     <v-col cols="9">
                       <LoginView></LoginView>
                     </v-col>
-                    <v-col cols="3" style="text-align: center; align-items: center;" class="align-center justify-center bg-mainColor " >
+                    <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;" >
                       <h2>尚未註冊?</h2>
                       <v-btn @click="step++" variant="outlined"> 註冊 </v-btn>
                     </v-col>
                   </v-row>
                 </v-window-item>
-  
+
                 <v-window-item :value="2" class="bg-white position-relative">
-                  <v-row>
-                    <v-col cols="3" position-absolute style="text-align: center; align-items: center;" class="align-center justify-center bg-mainColor " >
+                  <v-row class="ma-0">
+                    <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;" >
                       <h2>已經註冊?</h2>
                       <v-btn @click="step--" variant="outlined" >登入</v-btn>
                     </v-col>
@@ -92,7 +94,10 @@
               </v-window>
             </v-card>
           </v-dialog>
-        </v-tab>
+        </v-btn>
+        <v-btn height="100%" variant="text" prepend-icon="mdi-logout" @click="logout" v-if="user.isLogin"> 登出
+        </v-btn>
+
       </v-tabs>
     </template>
 
@@ -101,7 +106,6 @@
         <RouterView :key="$route.path"></RouterView>
       </v-main>
     </v-window>
-
 
   </v-card>
 </template>
@@ -113,12 +117,19 @@ import { ref, computed } from 'vue'
 import { useUserStore } from '@/store/user'
 import LoginView from '@/components/LoginView.vue'
 import RegisterView from '@/components/RegisterView.vue'
+import { useApi } from '@/composables/axios'
+import { useSnackbar } from 'vuetify-use-dialog'
+import { useRouter } from 'vue-router'
 
 const user = useUserStore()
 
+const { apiAuth } = useApi()
+const router = useRouter()
+const createSnackbar = useSnackbar()
+
 // 手機版狀態判斷
-const { mobile } = useDisplay()
-const isMobile = computed(() => mobile.value)
+const { smAndDown } = useDisplay()
+const isMobile = computed(() => smAndDown.value)
 
 // 手機版惻欄開關
 const drawer = ref(false)
@@ -136,7 +147,34 @@ const navItems = computed(() => {
 
 const tab = ref(false)
 
-const dialog = ref(false)
+const login = ref(false)
+const logout = async () => {
+  try {
+    await apiAuth.delete('/users/logout')
+    user.logout()
+    createSnackbar({
+      text: '登出成功',
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'green',
+        location: 'top'
+      }
+    })
+    router.push('/')
+  } catch (error) {
+    const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
+    createSnackbar({
+      text,
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'red',
+        location: 'top'
+      }
+    })
+  }
+}
 
 const step = ref(1)
 </script>

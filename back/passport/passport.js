@@ -58,7 +58,7 @@ passport.use('jwt', new passportJWT.Strategy({
   // req = 請求資訊；payload = token解譯出的資料(token在middlewares-auth.js透過jwt.sign設定的內容，有設定效期(exp))
 }, async (req, payload, done) => {
   try {
-    // 檢查過期，若解譯資料的有效時間(日期) < 送出請求(登入)的時間
+    // 檢查過期，若解譯出的資料的有效時間(日期) < 送出請求(登入)的時間
     // jwt (過期)時間單位是'秒'，node.js 日期單位是'毫秒'，故 *1000
     const expired = payload.exp * 1000 < new Date().getTime()
 
@@ -79,7 +79,7 @@ passport.use('jwt', new passportJWT.Strategy({
     // const token = req.headers.authorization.split('')，與下列式可通用
     const token = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken()(req)
     const user = await users.findOne({ _id: payload._id, tokens: token })
-    // 如果user id 沒有
+    // 如果 token沒過期，但資料庫沒有具有該 token 的 user id
     if (!user) {
       throw new Error('JWT')
     }

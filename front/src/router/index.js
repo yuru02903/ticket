@@ -1,5 +1,5 @@
 // Composables
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, START_LOCATION } from 'vue-router'
 import { useUserStore } from '@/store/user'
 
 const routes = [
@@ -99,6 +99,11 @@ router.afterEach((to, from) => {
 
 router.beforeEach(async (to, from, next) => {
   const user = useUserStore()
+
+  if (from === START_LOCATION) {
+    await user.getProfile()
+    // next('/ticket')
+  }
 
   // 如果沒有登入，要去會員專區，重新導向回首頁
   if (!user.isLogin && ['/member'].includes(to.path)) {

@@ -50,7 +50,6 @@ export const login = async (req, res) => {
       result: {
         token,
         account: req.user.account,
-        nationalIdNumber: req.user.nationalIdNumber,
         email: req.user.email,
         role: req.user.role
       }
@@ -87,7 +86,7 @@ export const extend = async (req, res) => {
     // 取得這次請求的id
     const idx = req.user.tokens.findIndex(token => token === req.token)
     // 設定新的token
-    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7 days' })
+    const token = jwt.sign({ _id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '1 days' })
     // 替換token
     req.user.tokens[idx] = token
     // 儲存新的 token，完成舊換新
@@ -112,7 +111,6 @@ export const getProfile = (req, res) => {
       message: '',
       result: {
         account: req.user.account,
-        nationalIdNumber: req.user.nationalIdNumber,
         email: req.user.email,
         role: req.user.role
       }

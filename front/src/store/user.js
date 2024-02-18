@@ -2,12 +2,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import UserRole from '@/enums/UserRole'
+import { useApi } from '@/composables/axios'
 
 export const useUserStore = defineStore('app', () => {
+  const { apiAuth } = useApi()
   const token = ref('')
   const account = ref('')
   const email = ref('')
-  const nationalIdNumber = ref(0)
   const role = ref(UserRole.USER)
 
   const login = (data) => {
@@ -16,7 +17,6 @@ export const useUserStore = defineStore('app', () => {
     }
     account.value = data.account
     email.value = data.email
-    nationalIdNumber.value = data.nationalIdNumber
     role.value = data.role
   }
 
@@ -28,14 +28,38 @@ export const useUserStore = defineStore('app', () => {
     return role.value === UserRole.ADMIN
   })
 
+  const getProfile = async () => {
+    if (token.value.length === 0) return
+
+    try {
+      const { data } = await apiAuth.get('/users/me')
+      login(data.result)
+    } catch (error) {
+      logout()
+    }
+  }
+
+  const logout = () => {
+    token.value = ''
+    account.value = ''
+    email.value = ''
+    role.value = UserRole.USER
+  }
+
   return {
     token,
     account,
     email,
-    nationalIdNumber,
     role,
     login,
     isLogin,
-    isAdmin
+    isAdmin,
+    getProfile,
+    logout
+  }
+}, {
+  persist: {
+    key: 'goconcert',
+    paths: ['token']
   }
 })

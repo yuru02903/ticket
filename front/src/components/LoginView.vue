@@ -6,15 +6,18 @@
       </v-col>
       <v-col cols="12">
         <v-form :disabled="isSubmitting" @submit.prevent="submit" >
-          <v-text-field label="電子信箱" type="email" variant="solo"
-            prepend-inner-icon="mdi-email-outline"
+          <v-text-field
+            class="mb-2"
+            label="電子信箱" type="email" variant="underlined"
+            prepend-icon="mdi-email-outline"
             v-model="email.value.value"
             :error-messages="email.errorMessage.value">
           </v-text-field>
           <v-text-field
+            class="mb-4"
             label="密碼" minlength="8" maxlength="20" counter
-            hint="密碼為8 ~ 20個英數字，區分大小寫" type="password" variant="solo"
-            prepend-inner-icon="mdi-lock-outline"
+            hint="密碼為8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
+            prepend-icon="mdi-lock-outline"
             v-model="password.value.value"
             :error-messages="password.errorMessage.value">
           </v-text-field>
