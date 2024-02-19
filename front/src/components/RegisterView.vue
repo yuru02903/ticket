@@ -1,53 +1,48 @@
-<template class="rounded-xl">
-  <v-container class="px-8 py-12">
-    <v-row >
-      <v-col class="text-mainColor" cols="12">
-        <h1> 註冊 </h1>
-      </v-col>
-      <v-col >
-        <v-form :disabled="isSubmitting" @submit.prevent="submit" >
-          <v-text-field
-            class="mb-2"
-            label="帳號" minlength="4" maxlength="20" counter
-            hint="請輸入4 ~ 20個英數字，區分大小寫" variant="underlined"
-            prepend-icon="mdi-account-circle-outline"
-            v-model="account.value.value"
-            :error-messages="account.errorMessage.value">
-          </v-text-field>
-          <v-text-field
-            class="mb-2"
-            label="身分證" minlength="10" maxlength="10" counter
-            type="password" variant="underlined"
-            prepend-icon="mdi-card-account-details-outline"
-            v-model="nationalIdNumber.value.value"
-            :error-messages="nationalIdNumber.errorMessage.value">
-          </v-text-field>
-          <v-text-field
-            class="mb-2"
-            label="電子信箱" type="email" variant="underlined"
-            prepend-icon="mdi-email-outline"
-            v-model="email.value.value"
-            :error-messages="email.errorMessage.value">
-          </v-text-field>
-          <v-text-field
-            class="mb-2"
-            label="密碼" minlength="8" maxlength="20" counter
-            hint="請輸入8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
-            prepend-icon="mdi-lock-outline"
-            v-model="password.value.value"
-            :error-messages="password.errorMessage.value">
-          </v-text-field>
-          <v-text-field
-            class="mb-2"
-            label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="underlined"
-            prepend-icon="mdi-lock"
-            v-model="passwordConfirm.value.value"
-            :error-messages="passwordConfirm.errorMessage.value">
-          </v-text-field>
-          <v-btn type="submit" color="mainColor" width="100%">註冊</v-btn>
-        </v-form>
-      </v-col>
-    </v-row>
+<template>
+  <v-container class="px-md-8 py-md-12 px-8 py-6" >
+    <h1 class="text-mainColor"> 註冊 </h1>
+    <v-form :disabled="isSubmitting" @submit.prevent="submit" >
+      <v-text-field
+        class="mb-sm-0 mb-md-2"
+        label="帳號" minlength="4" maxlength="20" counter
+        hint="請輸入4 ~ 20個英數字，區分大小寫" variant="underlined"
+        prepend-icon="mdi-account-circle-outline"
+        v-model="account.value.value"
+        :error-messages="account.errorMessage.value">
+      </v-text-field>
+      <v-text-field
+        class="mb-sm-0 mb-md-2"
+        label="身分證" minlength="10" maxlength="10" counter
+        type="password" variant="underlined"
+        prepend-icon="mdi-card-account-details-outline"
+        v-model="nationalIdNumber.value.value"
+        :error-messages="nationalIdNumber.errorMessage.value">
+      </v-text-field>
+      <v-text-field
+        class="mb-2"
+        label="電子信箱" type="email" variant="underlined"
+        prepend-icon="mdi-email-outline"
+        v-model="email.value.value"
+        :error-messages="email.errorMessage.value">
+      </v-text-field>
+      <v-text-field
+        class="mb-2"
+        label="密碼" minlength="8" maxlength="20" counter
+        hint="請輸入8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
+        prepend-icon="mdi-lock-outline"
+        v-model="password.value.value"
+        :error-messages="password.errorMessage.value">
+      </v-text-field>
+      <v-text-field
+        class="mb-2"
+        label="確認密碼" minlength="8" maxlength="20" counter type="password" variant="underlined"
+        prepend-icon="mdi-lock"
+        v-model="passwordConfirm.value.value"
+        :error-messages="passwordConfirm.errorMessage.value">
+      </v-text-field>
+      <v-btn type="submit" color="mainColor" width="100%">註冊</v-btn>
+    </v-form>
+    <h5 v-if="isSmall" class="pt-4" style="color: gray;">已經註冊? 前往 <router-link to="/register" class="text-mainColor">登入</router-link></h5>
   </v-container>
 </template>
 
@@ -67,11 +62,19 @@ import {
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useApi } from '@/composables/axios'
 import { useUserStore } from '@/store/user'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useDisplay } from 'vuetify'
 
 const { api } = useApi()
 
 // const router = useRouter()
 const createSnackbar = useSnackbar()
+
+const router = useRouter()
+
+const { smAndDown } = useDisplay()
+const isSmall = computed(() => smAndDown.value)
 
 // 定義註冊表單的資料格式
 const schema = yup.object({
@@ -150,6 +153,7 @@ const submit = handleSubmit(async (value) => {
         location: 'top'
       }
     })
+    router.push('/')
   } catch (error) {
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({

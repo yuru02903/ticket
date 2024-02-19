@@ -1,7 +1,7 @@
 <template>
   <v-card color="mainColor">
     <!-- 手機板 -->
-    <template v-if="isMobile">
+    <template v-if="isSmall">
       <!-- logo + 摺疊按鈕 -->
       <v-card-title class="text-center justify-center align-center py-3 bb d-flex">
         <v-card-actions>
@@ -64,48 +64,46 @@
             {{ item.text }}
           </v-tab>
         </template>
-        <v-btn height="100%" variant="text" prepend-icon="mdi-login" @click="login = true" v-if="!user.isLogin"> 登入/註冊
-          <v-dialog v-model="login" width="60%" min-width="600px" transition="dialog-top-transition">
-            <v-card class="rounded-xl">
+        <v-btn width="16%" height="100%" variant="text" prepend-icon="mdi-login" @click="login = true" v-if="!user.isLogin"> 登入/註冊
+          <v-dialog v-model="login" scrollable width="40%" min-width="600px" transition="dialog-top-transition">
+            <v-card class="rounded-xl" >
               <v-window v-model="step">
-                <v-window-item :value="1" class="bg-white">
-                  <v-row class="ma-0">
-                    <v-col cols="9">
-                      <LoginView></LoginView>
-                    </v-col>
-                    <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;" >
-                      <h2>尚未註冊?</h2>
-                      <v-btn @click="step++" variant="outlined"> 註冊 </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-window-item>
+                  <v-window-item :value="1" class="bg-white" >
+                    <v-row class="ma-0" >
+                      <v-col cols="9" class="d-flex" style="justify-content: center ;align-items: center; flex-direction: column;">
+                        <LoginView></LoginView>
+                      </v-col>
+                      <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;height: 400px;" >
+                        <h2>尚未註冊?</h2>
+                        <v-btn @click="step++" variant="outlined"> 註冊 </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-window-item>
 
-                <v-window-item :value="2" class="bg-white position-relative">
-                  <v-row class="ma-0">
-                    <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;" >
-                      <h2>已經註冊?</h2>
-                      <v-btn @click="step--" variant="outlined" >登入</v-btn>
-                    </v-col>
-                    <v-col cols="9">
-                      <RegisterView></RegisterView>
-                    </v-col>
-                  </v-row>
-                </v-window-item>
+                  <v-window-item :value="2" class="bg-white position-relative">
+                    <v-row class="ma-0">
+                      <v-col cols="3" class="bg-mainColor d-flex" style="justify-content: center ;align-items: center; flex-direction: column;height: 600px;" >
+                        <h2>已經註冊?</h2>
+                        <v-btn @click="step--" variant="outlined" >登入</v-btn>
+                      </v-col>
+                      <v-col cols="9" class="d-flex" style="justify-content: center ;align-items: center; flex-direction: column;height: 600px;">
+                        <RegisterView></RegisterView>
+                      </v-col>
+                    </v-row>
+                  </v-window-item>
               </v-window>
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn height="100%" variant="text" prepend-icon="mdi-logout" @click="logout" v-if="user.isLogin"> 登出
+        <v-btn width="16%" height="100%" variant="text" prepend-icon="mdi-logout" @click="logout" v-if="user.isLogin"> 登出
         </v-btn>
 
       </v-tabs>
     </template>
 
-    <v-window >
-      <v-main>
-        <RouterView :key="$route.path"></RouterView>
-      </v-main>
-    </v-window>
+    <v-main >
+      <RouterView :key="$route.path" ></RouterView>
+    </v-main>
 
   </v-card>
 </template>
@@ -129,7 +127,7 @@ const createSnackbar = useSnackbar()
 
 // 手機版狀態判斷
 const { smAndDown } = useDisplay()
-const isMobile = computed(() => smAndDown.value)
+const isSmall = computed(() => smAndDown.value)
 
 // 手機版惻欄開關
 const drawer = ref(false)
@@ -137,9 +135,9 @@ const drawer = ref(false)
 // 導覽列項目
 const navItems = computed(() => {
   return [
-    { to: '/concerts', text: '近期演出', icon: 'mdi-music' },
-    { to: '/tickets', text: '票券交流', icon: 'mdi-ticket-confirmation' },
-    { to: '/seats', text: '座位視野', icon: 'mdi-sofa-single' },
+    { to: '/concerts', text: '近期演出', icon: 'mdi-music', show: user.isLogin && !user.isAdmin },
+    { to: '/tickets', text: '票券交流', icon: 'mdi-ticket-confirmation', show: user.isLogin && !user.isAdmin },
+    { to: '/seats', text: '座位視野', icon: 'mdi-sofa-single', show: user.isLogin && !user.isAdmin },
     { to: '/member', text: '會員專區', icon: 'mdi-cog', show: user.isLogin && !user.isAdmin },
     { to: '/admin', text: '管理專區', icon: 'mdi-cog', show: user.isLogin && user.isAdmin }
   ]

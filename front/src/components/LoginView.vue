@@ -1,31 +1,27 @@
 <template>
-  <v-container class="px-8 py-6">
-    <v-row>
-      <v-col class="text-mainColor" cols="12">
-        <h1> 登入 </h1>
-      </v-col>
-      <v-col cols="12">
-        <v-form :disabled="isSubmitting" @submit.prevent="submit" >
-          <v-text-field
-            class="mb-2"
-            label="電子信箱" type="email" variant="underlined"
-            prepend-icon="mdi-email-outline"
-            v-model="email.value.value"
-            :error-messages="email.errorMessage.value">
-          </v-text-field>
-          <v-text-field
-            class="mb-4"
-            label="密碼" minlength="8" maxlength="20" counter
-            hint="密碼為8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
-            prepend-icon="mdi-lock-outline"
-            v-model="password.value.value"
-            :error-messages="password.errorMessage.value">
-          </v-text-field>
-          <v-btn width="100%" type="submit" color="mainColor">登入</v-btn>
-        </v-form>
-      </v-col>
-    </v-row>
+  <v-container class="px-8 py-12" >
+    <h1 class="text-mainColor pb-4"> 登入 </h1>
+    <v-form  :disabled="isSubmitting" @submit.prevent="submit" >
+      <v-text-field
+        class="mb-2"
+        label="電子信箱" type="email" variant="underlined"
+        prepend-icon="mdi-email-outline"
+        v-model="email.value.value"
+        :error-messages="email.errorMessage.value">
+      </v-text-field>
+      <v-text-field
+        class="mb-4"
+        label="密碼" minlength="8" maxlength="20" counter
+        hint="密碼為8 ~ 20個英數字，區分大小寫" type="password" variant="underlined"
+        prepend-icon="mdi-lock-outline"
+        v-model="password.value.value"
+        :error-messages="password.errorMessage.value">
+      </v-text-field>
+      <v-btn width="100%" type="submit" color="mainColor">登入</v-btn>
+    </v-form>
+    <h5 v-if="isSmall" class="pt-4" style="color: gray;">尚未註冊? 前往 <router-link to="/register" class="text-mainColor">註冊</router-link></h5>
   </v-container>
+
 </template>
 
 <script setup>
@@ -38,11 +34,18 @@ import * as yup from 'yup'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { useApi } from '@/composables/axios'
 import { useUserStore } from '@/store/user'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useDisplay } from 'vuetify'
 
 const { api } = useApi()
 // const router = useRouter()
 const createSnackbar = useSnackbar()
 const user = useUserStore()
+const router = useRouter()
+
+const { smAndDown } = useDisplay()
+const isSmall = computed(() => smAndDown.value)
 
 // 定義註冊表單的資料格式
 const schema = yup.object({
@@ -87,6 +90,7 @@ const submit = handleSubmit(async (value) => {
         location: 'top'
       }
     })
+    router.push('/')
   } catch (error) {
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
     createSnackbar({

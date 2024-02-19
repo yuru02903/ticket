@@ -1,6 +1,7 @@
 // Composables
 import { createRouter, createWebHashHistory, START_LOCATION } from 'vue-router'
 import { useUserStore } from '@/store/user'
+import Swal from 'sweetalert2'
 
 const routes = [
   {
@@ -66,6 +67,16 @@ const routes = [
           login: false,
           admin: false
         }
+      },
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import('@/components/RegisterView.vue'),
+        meta: {
+          title: 'GoConcert - 註冊',
+          login: false,
+          admin: false
+        }
       }
     ]
   },
@@ -74,13 +85,29 @@ const routes = [
     component: () => import('@/layouts/MemberLayout.vue'),
     children: [
       {
-        path: '',
-        name: 'Member',
-        component: () => import('@/views/front/HomeView.vue'),
+        path: 'home',
+        name: 'MemberHome',
+        component: () => import('@/views/member/HomeView.vue'),
         meta: {
           title: 'GoConcert - 會員專區',
-          login: false,
+          login: true,
           admin: false
+        }
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AdminHome',
+        component: () => import('@/views/admin/HomeView.vue'),
+        meta: {
+          title: 'GoConcert - 管理專區',
+          login: true,
+          admin: true
         }
       }
     ]
