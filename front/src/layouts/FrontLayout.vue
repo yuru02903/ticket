@@ -102,10 +102,10 @@
 
       </v-tabs>
     </template>
-
-    <v-main >
+    <v-divider></v-divider>
+    <!-- <v-main > -->
       <RouterView :key="$route.path" ></RouterView>
-    </v-main>
+    <!-- </v-main> -->
 
   </v-card>
 </template>

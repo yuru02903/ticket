@@ -1,27 +1,26 @@
 <template>
-  <v-card color="mainColor">
+  <v-card color="bgPrimary">
     <v-row>
       <v-col cols="12">
-        <v-card-title class="text-center justify-center align-center py-3 bb d-flex">
+        <v-card-title color="textPrimary" class="text-center justify-center align-center py-3 bb d-flex">
           <v-card-actions>
             <v-btn class="font-weight-bold text-h3 text-mainColor" height="100%" to="/" :active="false">GoConcert</v-btn>
           </v-card-actions>
         </v-card-title>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col style="position: absolute;">
+    <v-row class="pa-0 ma-0">
         <v-navigation-drawer
-          v-model="admin_drawer"
+          v-model="adminDrawer"
           :rail="rail"
           permanent
           @click="rail = false"
           style="position: relative;"
+          color="bgPrimary"
         >
           <v-list-item
-            prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-            title="John Leider"
-            nav
+            :prepend-avatar
+            :title="user.account"
           >
             <template v-slot:append>
               <v-btn
@@ -40,10 +39,7 @@
             <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
           </v-list>
         </v-navigation-drawer>
-      </v-col>
-      <v-col>
         <RouterView ></RouterView>
-      </v-col>
     </v-row>
 
   </v-card>
@@ -52,21 +48,19 @@
 <script setup>
 import { useDisplay } from 'vuetify'
 import { ref, computed } from 'vue'
+import { useUserStore } from '@/store/user'
 
 const { smAndDown } = useDisplay()
 const isSmall = computed(() => smAndDown.value)
 
-const drawer = ref(false)
-const admin_drawer = ref(true)
+const adminDrawer = ref(true)
 const rail = ref(true)
 
-const navItems = [
-  { to: '/concerts', text: '近期演出', icon: 'mdi-music' },
-  { to: '/tickets', text: '票券交流', icon: 'mdi-ticket-confirmation' },
-  { to: '/seats', text: '座位視野', icon: 'mdi-sofa-single' },
-  { to: '/member', text: '會員專區', icon: 'mdi-cog' },
-  { to: '/admin', text: '管理專區', icon: 'mdi-cog' }
-]
+const user = useUserStore()
+
+const prependAvatar = computed(() => {
+  return `https://source.boringavatars.com/beam/120/${user.account}?colors=4EB3DE,8DE0A6,FCF09F,F27C7C,DE528C`
+})
 
 </script>
 <style>

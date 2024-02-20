@@ -17,6 +17,8 @@ const apiAuth = axios.create({
 // 5. 呼叫的地方的 .then() .catch()
 
 // 請求攔截器 apiAuth.interceptors.request
+// config => 這次請求的設定：代那些參數、請求網址、路徑、請求方式
+// 用請求攔截器，在請求設定的headers加上JWT
 apiAuth.interceptors.request.use(config => {
   const user = useUserStore()
   config.headers.Authorization = 'Bearer ' + user.token

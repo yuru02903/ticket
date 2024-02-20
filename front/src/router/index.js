@@ -77,23 +77,24 @@ const routes = [
           login: false,
           admin: false
         }
-      }
-    ]
-  },
-  {
-    path: '/member',
-    component: () => import('@/layouts/MemberLayout.vue'),
-    children: [
+      },
       {
-        path: 'home',
-        name: 'MemberHome',
-        component: () => import('@/views/member/HomeView.vue'),
-        meta: {
-          title: 'GoConcert - 會員專區',
-          login: true,
-          admin: false
-        }
+        path: '/member',
+        component: () => import('@/layouts/MemberLayout.vue'),
+        children: [
+          {
+            path: 'home',
+            name: 'MemberHome',
+            component: () => import('@/views/member/HomeView.vue'),
+            meta: {
+              title: 'GoConcert - 會員專區',
+              login: true,
+              admin: false
+            }
+          }
+        ]
       }
+
     ]
   },
   {
