@@ -42,7 +42,7 @@
       </v-text-field>
       <v-btn type="submit" color="mainColor" width="100%">註冊</v-btn>
     </v-form>
-    <h5 v-if="isSmall" class="pt-4" style="color: gray;">已經註冊? 前往 <router-link to="/register" class="text-mainColor">登入</router-link></h5>
+    <h5 v-if="isSmall" class="pt-4" style="color: gray;">已經註冊? 前往 <router-link to="/login" class="text-mainColor">登入</router-link></h5>
   </v-container>
 </template>
 

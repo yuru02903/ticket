@@ -129,12 +129,22 @@ router.beforeEach(async (to, from, next) => {
 
   if (from === START_LOCATION) {
     await user.getProfile()
-    // next('/ticket')
   }
 
   // 如果沒有登入，要去會員專區，重新導向回首頁
   if (!user.isLogin && ['/member'].includes(to.path)) {
-    next('/')
+    await Swal.fire({
+      title: '尚未登入，請登入會員',
+      showCancelButton: true,
+      confirmButtonText: '登入',
+      cancelButtonText: '我想先逛逛'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        next('/login')
+      } else {
+        next('/')
+      }
+    })
   } else if (to.meta.admin && !user.isAdmin) {
     // 如果要去的頁面要管理員，但是不是管理員，重新導向回首頁
     next('/')

@@ -60,6 +60,7 @@
             :to="item.to"
             :prepend-icon="item.icon"
             :active="false"
+            v-if="item.show"
           >
             {{ item.text }}
           </v-tab>
@@ -95,7 +96,8 @@
             </v-card>
           </v-dialog>
         </v-btn>
-        <v-btn width="16%" height="100%" variant="text" prepend-icon="mdi-logout" @click="logout" v-if="user.isLogin"> 登出
+
+        <v-btn width="16%" height="100%" variant="text" prepend-icon="mdi-logout" @click="logout"  v-if="user.isLogin"> 登出
         </v-btn>
 
       </v-tabs>
@@ -135,9 +137,9 @@ const drawer = ref(false)
 // 導覽列項目
 const navItems = computed(() => {
   return [
-    { to: '/concerts', text: '近期演出', icon: 'mdi-music', show: user.isLogin && !user.isAdmin },
-    { to: '/tickets', text: '票券交流', icon: 'mdi-ticket-confirmation', show: user.isLogin && !user.isAdmin },
-    { to: '/seats', text: '座位視野', icon: 'mdi-sofa-single', show: user.isLogin && !user.isAdmin },
+    { to: '/concerts', text: '近期演出', icon: 'mdi-music', show: true },
+    { to: '/tickets', text: '票券交流', icon: 'mdi-ticket-confirmation', show: true },
+    { to: '/seats', text: '座位視野', icon: 'mdi-sofa-single', show: true },
     { to: '/member', text: '會員專區', icon: 'mdi-cog', show: user.isLogin && !user.isAdmin },
     { to: '/admin', text: '管理專區', icon: 'mdi-cog', show: user.isLogin && user.isAdmin }
   ]
@@ -175,6 +177,7 @@ const logout = async () => {
 }
 
 const step = ref(1)
+
 </script>
 <style>
 * {
