@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 // cors 是否允許跨域請求，前端才能請求資料
 import cors from 'cors'
 import routeUsers from './routes/user.js'
+import routeTickets from './routes/tickets.js'
 import { StatusCodes } from 'http-status-codes'
 import './passport/passport.js'
 
@@ -37,6 +38,7 @@ app.use((_, req, res, next) => {
 })
 
 app.use('/users', routeUsers)
+app.use('/tickets', routeTickets)
 
 // app.all => 任意請求方式
 // * => 任意字元 == 任意路徑

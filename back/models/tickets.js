@@ -21,6 +21,16 @@ const schema = new Schema({
     ref: 'users',
     required: [true, '缺少賣家']
   },
+  category_country: {
+    type: ObjectId,
+    ref: 'category_country',
+    required: [true, '請選擇表演者國籍']
+  },
+  category_group: {
+    type: ObjectId,
+    ref: 'category_group',
+    required: [true, '請選擇表演者性質']
+  },
   description: {
     type: String
   }
@@ -30,4 +40,4 @@ const schema = new Schema({
   versionKey: false
 })
 
-export default model('products', schema)
+export default model('tickets', schema)
