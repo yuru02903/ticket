@@ -36,7 +36,10 @@
           <v-text-field label="名稱"></v-text-field>
           <v-text-field label="原始票價" type="number" min="0"></v-text-field>
           <v-text-field label="售價" type="number" min="0"></v-text-field>
-          <v-select></v-select>
+          <v-select label="表演者國籍" :items="categoryCountry"></v-select>
+          <v-select label="表演者性質" :items="categoryGroup"></v-select>
+          <v-checkbox label="是否上架"></v-checkbox>
+          <v-textarea label="說明"></v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -50,6 +53,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import * as yup from 'yup'
+import { useForm, useField } from 'vee-validate'
 
 const dialog = ref(false)
 const dialogId = ref('')
@@ -58,6 +63,50 @@ const openDialog = () => {
   dialogId.value = ''
   dialog.value = true
 }
+
+const categoryCountry = ['台灣', '韓國', '日本', '歐美', '泰國', '其他']
+const categoryGroup = ['團體', '個人']
+
+const schema = yup.object({
+  name: yup
+    .string()
+    .required('缺少票券名稱'),
+  original_price: yup
+    .number()
+    .typeError('票券原價格式錯誤，請填寫數字')
+    .required('請填寫票券原價').min(0, '價格不能小於0'),
+  price: yup
+    .number()
+    .typeError('票券售價格式錯誤，請填寫數字')
+    .required('請填寫票券售價').min(0, '價格不能小於0'),
+  description: yup
+    .string()
+    .required('缺少商品說明'),
+  categoryCountry: yup
+    .string()
+    .required('請選擇表演者國籍')
+    .test('isCategoryCountry', '表演者國籍有誤', value => categoryCountry.includes(value)),
+  categoryGroup: yup
+    .string()
+    .required('請選擇表演者性質')
+    .test('isCategoryGroup', '表演者性質有誤', value => categoryGroup.includes(value)),
+  sell: yup
+    .boolean()
+})
+
+const { handleSubmit, isSubmitting, resetForm } = useForm({
+  validationSchema: schema,
+  initialValues: {
+    name: '',
+    original_price: 0,
+    price: 0,
+    description: '',
+    categoryCountry: '',
+    categoryGroup: '',
+    sell: false
+  }
+})
+
 </script>
 
 <style>

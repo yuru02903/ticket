@@ -21,18 +21,33 @@ const schema = new Schema({
     ref: 'users',
     required: [true, '缺少賣家']
   },
+  // category_country: {
+  //   type: ObjectId,
+  //   ref: 'category_country',
+  //   required: [true, '請選擇表演者國籍']
+  // },
   category_country: {
-    type: ObjectId,
-    ref: 'category_country',
-    required: [true, '請選擇表演者國籍']
+    type: String,
+    required: [true, '缺少表演者國籍'],
+    enum: {
+      values: ['台灣', '韓國', '日本', '歐美', '泰國', '其他'],
+      message: '表演者國籍有誤'
+    }
   },
   category_group: {
-    type: ObjectId,
-    ref: 'category_group',
-    required: [true, '請選擇表演者性質']
+    type: String,
+    required: [true, '缺少表演者性質'],
+    enum: {
+      values: ['團體', '個人'],
+      message: '表演者性質有誤'
+    }
   },
   description: {
     type: String
+  },
+  sell: {
+    type: Boolean,
+    required: [true, '缺少票券上架狀態']
   }
 },
 {

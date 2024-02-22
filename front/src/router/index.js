@@ -131,6 +131,16 @@ const routes = [
           login: true,
           admin: true
         }
+      },
+      {
+        path: 'seats',
+        name: 'AdminSeats',
+        component: () => import('@/views/admin/SeatsView.vue'),
+        meta: {
+          title: 'GoConcert - 座位管理',
+          login: true,
+          admin: true
+        }
       }
     ]
   }

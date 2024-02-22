@@ -9,37 +9,35 @@
         </v-card-title>
       </v-col>
     </v-row>
-    <v-row class="pa-0 ma-0">
-        <v-navigation-drawer
-          v-model="adminDrawer"
-          :rail="rail"
-          permanent
-          @click="rail = false"
-          style="position: relative;"
-          color="bgPrimary"
+    <v-row class="pa-0 ma-0" >
+      <v-navigation-drawer
+        v-model="adminDrawer"
+        permanent
+        style="position: relative;float: left;height: 100%;"
+        color="bgPrimary"
+
+      >
+        <v-list-item
+          :prepend-avatar
+          :title="user.account"
+          class="py-4"
         >
-          <v-list-item
-            :prepend-avatar
-            :title="user.account"
-          >
-            <template v-slot:append>
-              <v-btn
-                variant="text"
-                icon="mdi-chevron-left"
-                @click.stop="rail = !rail"
-              ></v-btn>
-            </template>
-          </v-list-item>
+        </v-list-item>
 
-          <v-divider></v-divider>
+        <v-divider></v-divider>
 
-          <v-list density="compact" nav>
-            <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-            <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-            <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
-          </v-list>
-        </v-navigation-drawer>
-        <RouterView ></RouterView>
+        <v-list density="compact" nav >
+          <template v-for="item in adminItems" :key="item.to" >
+            <v-list-item :to="item.to" :active="false">
+              <template #prepend>
+                <v-icon :icon="item.icon"></v-icon>
+              </template>
+              <v-list-item-title> {{ item.text }} </v-list-item-title>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-navigation-drawer>
+      <RouterView :key="$route.path" ></RouterView>
     </v-row>
 
   </v-card>
@@ -60,6 +58,14 @@ const user = useUserStore()
 
 const prependAvatar = computed(() => {
   return `https://source.boringavatars.com/beam/120/${user.account}?colors=4EB3DE,8DE0A6,FCF09F,F27C7C,DE528C`
+})
+
+const adminItems = computed(() => {
+  return [
+    { to: '/admin', text: '我的資料', icon: 'mdi-account' },
+    { to: '/admin/tickets', text: '票券管理', icon: 'mdi-ticket-confirmation' },
+    { to: '/admin/seats', text: '座位管理', icon: 'mdi-sofa-single' }
+  ]
 })
 
 </script>

@@ -1,6 +1,6 @@
 import tickets from '../models/tickets.js'
 import { StatusCodes } from 'http-status-codes'
-import validator from 'validator'
+// import validator from 'validator'
 
 export const create = async (req, res) => {
   try {

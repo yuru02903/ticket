@@ -2,7 +2,7 @@
   <div style="height: 100%" >
   <!-- <div style="width: 1280px; margin-right: auto; margin-left: auto;box-sizing: border-box;" > -->
     <v-navigation-drawer
-      v-model="adminDrawer"
+      v-model="memberDrawer"
       :rail="rail"
       permanent
       @click="rail = false"
@@ -38,7 +38,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer
-    v-model="adminDrawer"
+    v-model="memberDrawer"
       permanent
       style="position: relative;float: left;height: 100%;"
       color="bgPrimary"
@@ -79,7 +79,7 @@ import { useUserStore } from '@/store/user'
 const { smAndDown } = useDisplay()
 const isSmall = computed(() => smAndDown.value)
 
-const adminDrawer = ref(true)
+const memberDrawer = ref(true)
 const rail = ref(true)
 
 const user = useUserStore()
