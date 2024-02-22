@@ -104,7 +104,7 @@
     </template>
     <v-divider></v-divider>
     <!-- <v-main > -->
-      <RouterView :key="$route.path" ></RouterView>
+    <RouterView :key="$route.path" ></RouterView>
     <!-- </v-main> -->
 
   </v-card>

@@ -41,7 +41,7 @@ const routes = [
       {
         path: 'seats',
         name: 'Seats',
-        component: () => import('@/components/SeatsView.vue'),
+        component: () => import('@/views/front/SeatsView.vue'),
         meta: {
           title: 'GoConcert - 座位視野',
           login: false,
@@ -51,7 +51,7 @@ const routes = [
       {
         path: 'articles',
         name: 'Articles',
-        component: () => import('@/components/ArticlesView.vue'),
+        component: () => import('@/views/front/ArticlesView.vue'),
         meta: {
           title: 'GoConcert - 討論專區',
           login: false,
@@ -83,15 +83,36 @@ const routes = [
         component: () => import('@/layouts/MemberLayout.vue'),
         children: [
           {
-            path: 'home',
+            path: '',
             name: 'MemberHome',
             component: () => import('@/views/member/HomeView.vue'),
             meta: {
-              title: 'GoConcert - 會員專區',
+              title: 'GoConcert - 個人資料',
+              login: true,
+              admin: false
+            }
+          },
+          {
+            path: 'tickets',
+            name: 'MemberTickets',
+            component: () => import('@/views/member/TicketsView.vue'),
+            meta: {
+              title: 'GoConcert - 票券管理',
               login: true,
               admin: false
             }
           }
+          // ,
+          // {
+          //   path: 'tickets',
+          //   name: 'MemberTickets',
+          //   component: () => import('@/views/member/TicketsView.vue'),
+          //   meta: {
+          //     title: 'GoConcert - 票券管理',
+          //     login: true,
+          //     admin: false
+          //   }
+          // }
         ]
       }
 
@@ -122,7 +143,10 @@ const router = createRouter({
 
 // 進到每頁後執行 function => 修改瀏覽器標題
 router.afterEach((to, from) => {
-  document.title = to.meta.title
+  // if (['/member'].includes(to.path)) {
+  //   let
+  // }
+  document.title = (to.meta.title)
 })
 
 router.beforeEach(async (to, from, next) => {

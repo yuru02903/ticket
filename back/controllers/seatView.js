@@ -1,11 +1,11 @@
-import seat_view from '../models/seat_view.js'
+import seatView from '../models/seatView.js'
 import { StatusCodes } from 'http-status-codes'
-import validator from 'validator'
+// import validator from 'validator'
 
 export const create = async (req, res) => {
   try {
     req.body.image = req.file.path
-    const result = await seat_view.create(req.body)
+    const result = await seatView.create(req.body)
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',

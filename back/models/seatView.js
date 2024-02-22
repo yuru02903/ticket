@@ -21,4 +21,4 @@ const schema = new Schema({
   versionKey: false
 })
 
-export default model('seat_views', schema)
+export default model('seatView', schema)
