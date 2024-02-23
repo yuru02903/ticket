@@ -35,8 +35,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red">取消</v-btn>
-          <v-btn color="green">送出</v-btn>
+          <v-btn color="red" :disabled="isSubmitting">取消</v-btn>
+          <v-btn color="green" type="submit" :loading="isSubmitting">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -47,6 +47,11 @@
 import { ref } from 'vue'
 import * as yup from 'yup'
 import { useForm, useField } from 'vee-validate'
+import { useApi } from '@/composables/axios'
+import { useSnackbar } from 'vuetify-use-dialog'
+
+const { apiAuth } = useApi()
+const createSnackbar = useSnackbar()
 
 const dialog = ref(false)
 const dialogId = ref('')
@@ -73,12 +78,6 @@ const schema = yup.object({
 
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
-  initialValues: {
-    venue: '',
-    area: '',
-    row: '',
-    seat: ''
-  }
 })
 
 const venue = useField('venue')
@@ -87,6 +86,36 @@ const row = useField('row')
 const seat = useField('seat')
 
 const submit = handleSubmit(async (values) => {
+  try {
+    await apiAuth.post('/seats', {
+      venue: values.venue,
+      area: values.area,
+      row: values.row,
+      seat: values.seat,
+    })
+    createSnackbar({
+      text: dialogId.value === '' ? '新增成功' : '編輯成功',
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'green',
+        location: 'bottom'
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
+    createSnackbar({
+      text,
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'red',
+        location: 'bottom'
+      }
+    })
+  }
+  
 })
 </script>
 

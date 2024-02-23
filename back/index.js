@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import routeUsers from './routes/user.js'
 import routeTickets from './routes/tickets.js'
+import routeSeats from './routes/seats.js'
 import { StatusCodes } from 'http-status-codes'
 import './passport/passport.js'
 
@@ -39,6 +40,7 @@ app.use((_, req, res, next) => {
 
 app.use('/users', routeUsers)
 app.use('/tickets', routeTickets)
+app.use('/seats', routeSeats)
 
 // app.all => 任意請求方式
 // * => 任意字元 == 任意路徑
