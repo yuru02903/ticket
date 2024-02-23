@@ -1,5 +1,5 @@
 <template >
-  <div style="height: 100%" >
+  <row style="height: 100%" >
   <!-- <div style="width: 1280px; margin-right: auto; margin-left: auto;box-sizing: border-box;" > -->
     <v-navigation-drawer
       v-model="memberDrawer"
@@ -67,7 +67,7 @@
 
     <RouterView :key="$route.path" ></RouterView>
 
-  </div>
+  </row>
 </template>
 
 <script setup>

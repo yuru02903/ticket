@@ -133,6 +133,16 @@ const routes = [
         }
       },
       {
+        path: 'tickets',
+        name: 'TicketsSeats',
+        component: () => import('@/views/admin/TicketsView.vue'),
+        meta: {
+          title: 'GoConcert - 票券管理',
+          login: true,
+          admin: true
+        }
+      },
+      {
         path: 'seats',
         name: 'AdminSeats',
         component: () => import('@/views/admin/SeatsView.vue'),

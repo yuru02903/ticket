@@ -62,7 +62,7 @@ const prependAvatar = computed(() => {
 
 const adminItems = computed(() => {
   return [
-    { to: '/admin', text: '我的資料', icon: 'mdi-account' },
+    { to: '/admin', text: '管理專區', icon: 'mdi-account' },
     { to: '/admin/tickets', text: '票券管理', icon: 'mdi-ticket-confirmation' },
     { to: '/admin/seats', text: '座位管理', icon: 'mdi-sofa-single' }
   ]

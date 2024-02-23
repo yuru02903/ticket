@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes'
 
 export const create = async (req, res) => {
   try {
+    req.body.seller = req.user._id
     const result = await tickets.create(req.body)
     res.status(StatusCodes.OK).json({
       success: true,

@@ -5,7 +5,7 @@ const schema = new Schema({
     type: String,
     required: [true, '缺少票券名稱']
   },
-  original_price: {
+  originalPrice: {
     type: Number,
     required: [true, '缺少票券原價']
   },
@@ -13,9 +13,9 @@ const schema = new Schema({
     type: Number,
     required: [true, '缺少票券售價']
   },
-  seat: {
+  // seat: {
 
-  },
+  // },
   seller: {
     type: ObjectId,
     ref: 'users',
@@ -26,7 +26,7 @@ const schema = new Schema({
   //   ref: 'category_country',
   //   required: [true, '請選擇表演者國籍']
   // },
-  category_country: {
+  categoryCountry: {
     type: String,
     required: [true, '缺少表演者國籍'],
     enum: {
@@ -34,7 +34,7 @@ const schema = new Schema({
       message: '表演者國籍有誤'
     }
   },
-  category_group: {
+  categoryGroup: {
     type: String,
     required: [true, '缺少表演者性質'],
     enum: {
