@@ -35,7 +35,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" :disabled="isSubmitting">取消</v-btn>
+          <v-btn color="red" :disabled="isSubmitting" @click="closeDialog">取消</v-btn>
           <v-btn color="green" type="submit" :loading="isSubmitting">送出</v-btn>
         </v-card-actions>
       </v-card>
@@ -61,6 +61,11 @@ const openDialog = () => {
   dialog.value = true
 }
 
+const closeDialog = () => {
+  dialog.value = false
+  resetForm()
+}
+
 const schema = yup.object({
   venue: yup
     .string()
@@ -77,7 +82,7 @@ const schema = yup.object({
 })
 
 const { handleSubmit, isSubmitting, resetForm } = useForm({
-  validationSchema: schema,
+  validationSchema: schema
 })
 
 const venue = useField('venue')
@@ -91,7 +96,7 @@ const submit = handleSubmit(async (values) => {
       venue: values.venue,
       area: values.area,
       row: values.row,
-      seat: values.seat,
+      seat: values.seat
     })
     createSnackbar({
       text: dialogId.value === '' ? '新增成功' : '編輯成功',
@@ -102,6 +107,7 @@ const submit = handleSubmit(async (values) => {
         location: 'bottom'
       }
     })
+    closeDialog()
   } catch (error) {
     console.log(error)
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
@@ -115,7 +121,6 @@ const submit = handleSubmit(async (values) => {
       }
     })
   }
-  
 })
 </script>
 
