@@ -12,8 +12,36 @@
             </template>
             <v-list-item>
               <v-row>
-                <v-col cols="12">
+                <v-col cols="6">
                   <v-btn color="green" @click="openDialog">新增票券</v-btn>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    label="搜尋" append-icon="mdi-magnify" v-model="tableSearch"
+                    @click:append="tableApplySearch" @keydown:enter="tableApplySearch"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-data-table-server
+                  v-model:items-per-page="tableItemsPerPage"
+                  v-model:sort-by="tableSortBy"
+                  v-model:page="tablePage"
+                  :items="tableTickets"
+                  :headers="tableHeaders"
+                  :loading="tableLoading"
+                  :items-length="tableItemsLength"
+                  :search="tableSearch"
+                  @update:items-per-page="tableLoadItems"
+                  @update:sort-by="tableLoadItems"
+                  @update:page="tableLoadItems"
+                  hover >
+                    <template #[`item.sell`]="{ item }">
+                      <v-icon icon="mdi-check" v-if="item.sell"></v-icon>
+                    </template>
+                    <template #[`item.edit`]="{ item }">
+                      <v-btn icon="mdi-pencil" variant="text" color="grey" @click="openDialog(item)"></v-btn>
+                    </template>
+                  </v-data-table-server>
                 </v-col>
               </v-row>
             </v-list-item>
@@ -33,8 +61,10 @@
       <v-card>
         <v-card-title>{{ dialogId === '' ? '新增票券' : '編輯票券' }}</v-card-title>
         <v-card-text>
-          <v-text-field label="名稱" v-model="name.value.value"
+          <v-text-field label="演唱會名稱" v-model="name.value.value"
             :error-messages="name.errorMessage.value"></v-text-field>
+          <v-text-field label="表演者" v-model="performer.value.value"
+            :error-messages="performer.errorMessage.value"></v-text-field>
           <v-text-field label="原始票價" type="number" min="0" v-model="originalPrice.value.value"
             :error-messages="originalPrice.errorMessage.value"></v-text-field>
           <v-text-field label="售價" type="number" min="0" v-model="price.value.value"
@@ -45,7 +75,7 @@
             :error-messages="categoryGroup.errorMessage.value"></v-select>
           <v-checkbox label="是否上架" v-model="sell.value.value"
             :error-messages="sell.errorMessage.value"></v-checkbox>
-          <v-textarea label="說明" v-model="description.value.value"
+          <v-textarea label="其他說明" v-model="description.value.value"
             :error-messages="description.errorMessage.value"></v-textarea>
         </v-card-text>
         <v-card-actions>
@@ -87,7 +117,10 @@ const CategoryGroup = ['團體', '個人']
 const schema = yup.object({
   name: yup
     .string()
-    .required('缺少票券名稱'),
+    .required('缺少演唱會名稱'),
+  performer: yup
+    .string()
+    .required('缺少表演者名稱'),
   originalPrice: yup
     .number()
     .typeError('票券原價格式錯誤，請填寫數字')
@@ -97,8 +130,7 @@ const schema = yup.object({
     .typeError('票券售價格式錯誤，請填寫數字')
     .required('請填寫票券售價').min(0, '價格不能小於0'),
   description: yup
-    .string()
-    .required('缺少商品說明'),
+    .string(),
   categoryCountry: yup
     .string()
     .required('請選擇表演者國籍')
@@ -115,6 +147,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
     name: '',
+    performer: '',
     originalPrice: 0,
     price: 0,
     description: '',
@@ -125,6 +158,7 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
 })
 
 const name = useField('name')
+const performer = useField('performer')
 const originalPrice = useField('originalPrice')
 const price = useField('price')
 const description = useField('description')
@@ -136,6 +170,7 @@ const submit = handleSubmit(async (values) => {
   try {
     await apiAuth.post('/tickets', {
       name: values.name,
+      performer: values.performer,
       originalPrice: values.originalPrice,
       price: values.price,
       description: values.description,
@@ -167,6 +202,66 @@ const submit = handleSubmit(async (values) => {
     })
   }
 })
+
+// 表格
+// 表格每頁幾個
+const tableItemsPerPage = ref(10)
+// 表格排序 ( desc=倒序 ; asc=正序 )
+const tableSortBy = ref([
+  { key: 'createdAt', order: 'desc' }
+])
+// 表格頁碼
+const tablePage = ref(1)
+// 表格商品資料陣列
+const tableTickets = ref([])
+// 表格欄位設定
+const tableHeaders = [
+  { title: '名稱', align: 'center', sortable: true, key: 'name' },
+  { title: '表演者', align: 'center', sortable: true, key: 'performer' },
+  { title: '原價', align: 'center', sortable: true, key: 'originalPrice' },
+  { title: '售價', align: 'center', sortable: true, key: 'price' },
+  // { title: '說明', align: 'center', sortable: true, key: 'description' },
+  { title: '分類', align: 'center', sortable: true, key: 'categoryCountry' },
+  { title: '上架', align: 'center', sortable: true, key: 'sell' },
+  { title: '編輯', align: 'center', sortable: false, key: 'edit' }
+]
+// 表格載入狀態
+const tableLoading = ref(true)
+// 表格全部資料數
+const tableItemsLength = ref(0)
+// 表格搜尋文字
+const tableSearch = ref('')
+// 表格載入資料
+const tableLoadItems = async () => {
+  tableLoading.value = true
+  try {
+    const { data } = await apiAuth.get('/tickets/my', {
+      params: {
+        page: tablePage.value,
+        itemsPerPage: tableItemsPerPage.value,
+        sortBy: tableSortBy.value[0]?.key || 'createdAt',
+        sortOrder: tableSortBy.value[0]?.order === 'asc' ? 1 : -1,
+        search: tableSearch.value
+      }
+    })
+    tableTickets.value.splice(0, tableTickets.value.length, ...data.result.data)
+    tableItemsLength.value = data.result.total
+  } catch (error) {
+    console.log(error)
+    const text = error?.response?.data?.message || '發生錯誤，請稍後再試'
+    createSnackbar({
+      text,
+      showCloseButton: false,
+      snackbarProps: {
+        timeout: 2000,
+        color: 'red',
+        location: 'bottom'
+      }
+    })
+  }
+  tableLoading.value = false
+}
+tableLoadItems()
 
 </script>
 

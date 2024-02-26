@@ -1,11 +1,14 @@
 <template>
-  <v-row class="pa-0 ma-0">
-    <v-col cols="12" class="text-center pa-8">
+  <v-row class="py-8 px-4 ma-0">
+    <v-col cols="12" class=" ">
       <h1>座位管理</h1>
       <v-divider></v-divider>
     </v-col>
     <v-col cols="12" >
       <v-btn color="green" @click="openDialog">新增座位</v-btn>
+    </v-col>
+    <v-col cols="12">
+      <v-data-table-server></v-data-table-server>
     </v-col>
   </v-row>
 
@@ -27,9 +30,13 @@
               <v-text-field label="排數" clearable v-model="row.value.value"
                 :error-messages="row.errorMessage.value"></v-text-field>
             </v-col>
-            <v-col cols="12">
-              <v-text-field label="座號" clearable v-model="seat.value.value"
-                :error-messages="seat.errorMessage.value"></v-text-field>
+            <v-col cols="6">
+              <v-text-field label="開始座號" clearable v-model="seat1.value.value"
+                :error-messages="seat1.errorMessage.value"></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field label="結束座號" clearable v-model="seat2.value.value"
+                :error-messages="seat2.errorMessage.value"></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
@@ -74,11 +81,17 @@ const schema = yup.object({
     .string()
     .required('缺少區域名稱'),
   row: yup
-    .string()
+    .number()
+    .typeError('格式錯誤，請填寫數字')
     .required('缺少排數'),
-  seat: yup
-    .string()
-    .required('缺少座號')
+  seat1: yup
+    .number()
+    .typeError('格式錯誤，請填寫數字')
+    .required('缺少開始座號'),
+  seat2: yup
+    .number()
+    .typeError('格式錯誤，請填寫數字')
+    .required('缺少結束座號')
 })
 
 const { handleSubmit, isSubmitting, resetForm } = useForm({
@@ -88,16 +101,19 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
 const venue = useField('venue')
 const area = useField('area')
 const row = useField('row')
-const seat = useField('seat')
+const seat1 = useField('seat1')
+const seat2 = useField('seat2')
 
 const submit = handleSubmit(async (values) => {
   try {
-    await apiAuth.post('/seats', {
-      venue: values.venue,
-      area: values.area,
-      row: values.row,
-      seat: values.seat
-    })
+    for (let i = values.seat1; i <= values.seat2; i++) {
+      await apiAuth.post('/seats', {
+        venue: values.venue,
+        area: values.area,
+        row: values.row,
+        seat: i
+      })
+    }
     createSnackbar({
       text: dialogId.value === '' ? '新增成功' : '編輯成功',
       showCloseButton: false,

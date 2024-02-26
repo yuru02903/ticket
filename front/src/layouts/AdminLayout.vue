@@ -1,5 +1,5 @@
 <template>
-  <v-card color="bgPrimary">
+  <v-card color="bgPrimary" >
     <v-row>
       <v-col cols="12">
         <v-card-title color="textPrimary" class="text-center justify-center align-center py-3 bb d-flex">
@@ -9,7 +9,7 @@
         </v-card-title>
       </v-col>
     </v-row>
-    <v-row class="pa-0 ma-0" >
+    <v-row class="pa-0 ma-0">
       <v-navigation-drawer
         v-model="adminDrawer"
         permanent
