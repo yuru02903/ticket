@@ -11,7 +11,7 @@
       v-if="isSmall"
     >
     <v-list-item
-        :prepend-avatar
+        :prepend-avatar="prependAvatar"
         :title="user.account"
         class="pt-4"
       >
@@ -45,7 +45,7 @@
       v-else
     >
       <v-list-item
-        :prepend-avatar
+        :prepend-avatar="prependAvatar"
         :title="user.account"
         class="py-4"
       >

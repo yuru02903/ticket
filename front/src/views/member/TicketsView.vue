@@ -17,24 +17,26 @@
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
-                    label="搜尋" append-icon="mdi-magnify" v-model="tableSearch"
-                    @click:append="tableApplySearch" @keydown:enter="tableApplySearch"
+                    label="搜尋" append-icon="mdi-magnify" density="comfortable"
+                    v-model="tableSearch" rounded variant="outlined"
+                    @click:append="tableApplySearch"
+                    @keydown.enter="tableApplySearch"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-data-table-server
-                  v-model:items-per-page="tableItemsPerPage"
-                  v-model:sort-by="tableSortBy"
-                  v-model:page="tablePage"
-                  :items="tableTickets"
-                  :headers="tableHeaders"
-                  :loading="tableLoading"
-                  :items-length="tableItemsLength"
-                  :search="tableSearch"
-                  @update:items-per-page="tableLoadItems"
-                  @update:sort-by="tableLoadItems"
-                  @update:page="tableLoadItems"
-                  hover >
+                    v-model:items-per-page="tableItemsPerPage"
+                    v-model:sort-by="tableSortBy"
+                    v-model:page="tablePage"
+                    :items="tableTickets"
+                    :headers="tableHeaders"
+                    :loading="tableLoading"
+                    :items-length="tableItemsLength"
+                    :search="tableSearch"
+                    @update:items-per-page="tableLoadItems"
+                    @update:sort-by="tableLoadItems"
+                    @update:page="tableLoadItems"
+                    hover >
                     <template #[`item.sell`]="{ item }">
                       <v-icon icon="mdi-check" v-if="item.sell"></v-icon>
                     </template>
@@ -262,6 +264,11 @@ const tableLoadItems = async () => {
   tableLoading.value = false
 }
 tableLoadItems()
+
+const tableApplySearch = () => {
+  tablePage.value = 1
+  tableLoadItems()
+}
 
 </script>
 

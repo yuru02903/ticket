@@ -1,5 +1,5 @@
 <template>
-  <v-card color="bgPrimary" >
+  <v-card color="bgPrimary" style="height: 100%;" class="pb-8">
     <v-row>
       <v-col cols="12">
         <v-card-title color="textPrimary" class="text-center justify-center align-center py-3 bb d-flex">
@@ -9,7 +9,7 @@
         </v-card-title>
       </v-col>
     </v-row>
-    <v-row class="pa-0 ma-0">
+    <v-row class="pa-0 ma-0" style="height: 100%;">
       <v-navigation-drawer
         v-model="adminDrawer"
         permanent
@@ -70,13 +70,18 @@ const adminItems = computed(() => {
 
 </script>
 <style>
-*,div {
+* {
   margin: 0;
   padding: 0;
 }
 a {
   text-decoration: none;
   color: black;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
 .bg-mainColor {

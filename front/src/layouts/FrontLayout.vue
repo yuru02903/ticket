@@ -1,5 +1,5 @@
 <template>
-  <v-card color="mainColor">
+  <v-card color="mainColor" style="height: 100%;" class="pb-8">
     <!-- 手機板 -->
     <template v-if="isSmall">
       <!-- logo + 摺疊按鈕 -->

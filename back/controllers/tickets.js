@@ -53,7 +53,7 @@ export const getLaunchedTickets = async (req, res) => {
       .limit(itemsPerPage === -1 ? undefined : itemsPerPage)
 
     // estimatedDocumentCount() 計算總資料數
-    const total = await tickets.estimatedDocumentCount({ sell: true })
+    const total = await tickets.countDocuments({ sell: true })
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',

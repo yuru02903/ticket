@@ -1,11 +1,33 @@
 <template>
-  <v-row class="py-8 px-4 ma-0">
-    <v-col cols="12" class="">
+  <v-row class="pa-8 ma-0">
+    <v-col cols="12" >
       <h1>票券管理</h1>
       <v-divider></v-divider>
     </v-col>
     <v-col cols="12">
-      <v-data-table-server></v-data-table-server>
+      <v-text-field
+        label="搜尋" append-icon="mdi-magnify" v-model="tableSearch"
+        @click:append="tableApplySearch" @keydown.enter="tableApplySearch" >
+      </v-text-field>
+    </v-col>
+    <v-col cols="12" style="background-color: #FFFBE6;">
+      <v-data-table-server
+        v-model:items-per-page="tableItemsPerPage"
+        v-model:sort-by="tableSortBy"
+        v-model:page="tablePage"
+        :items="tableTickets"
+        :headers="tableHeaders"
+        :loading="tableLoading"
+        :items-length="tableItemsLength"
+        :search="tableSearch"
+        @update:items-per-page="tableLoadItems"
+        @update:sort-by="tableLoadItems"
+        @update:page="tableLoadItems"
+        hover>
+        <template #[`item.edit`]="{ item }">
+          <v-btn icon="mdi-pencil" variant="text" color="grey" @click="openDialog(item)"></v-btn>
+        </template>
+      </v-data-table-server>
     </v-col>
   </v-row>
 </template>
@@ -19,6 +41,20 @@ import { useSnackbar } from 'vuetify-use-dialog'
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
+const openDialog = (item) => {
+  if (item) {
+    dialogId.value = item._id
+    name.value.value = item.name
+    price.value.value = item.price
+    description.value.value = item.description
+    category.value.value = item.category
+    sell.value.value = item.sell
+  } else {
+    dialogId.value = ''
+  }
+  dialog.value = true
+}
+
 // 表格
 // 表格每頁幾個
 const tableItemsPerPage = ref(10)
@@ -29,15 +65,16 @@ const tableSortBy = ref([
 // 表格頁碼
 const tablePage = ref(1)
 // 表格商品資料陣列
-const tableProducts = ref([])
+const tableTickets = ref([])
 // 表格欄位設定
 const tableHeaders = [
-  { title: '圖片', align: 'center', sortable: false, key: 'image' },
+  { title: '賣家', key: 'seller.account' },
   { title: '名稱', align: 'center', sortable: true, key: 'name' },
-  { title: '價格', align: 'center', sortable: true, key: 'price' },
+  { title: '表演者', align: 'center', sortable: true, key: 'performer' },
+  { title: '原價', align: 'center', sortable: true, key: 'originalPrice' },
+  { title: '售價', align: 'center', sortable: true, key: 'price' },
   // { title: '說明', align: 'center', sortable: true, key: 'description' },
-  { title: '分類', align: 'center', sortable: true, key: 'category' },
-  { title: '上架', align: 'center', sortable: true, key: 'sell' },
+  { title: '分類', align: 'center', sortable: true, key: 'categoryCountry' },
   { title: '編輯', align: 'center', sortable: false, key: 'edit' }
 ]
 // 表格載入狀態
@@ -50,7 +87,7 @@ const tableSearch = ref('')
 const tableLoadItems = async () => {
   tableLoading.value = true
   try {
-    const { data } = await apiAuth.get('/products/all', {
+    const { data } = await apiAuth.get('/tickets/all', {
       params: {
         page: tablePage.value,
         itemsPerPage: tableItemsPerPage.value,
@@ -59,7 +96,7 @@ const tableLoadItems = async () => {
         search: tableSearch.value
       }
     })
-    tableProducts.value.splice(0, tableProducts.value.length, ...data.result.data)
+    tableTickets.value.splice(0, tableTickets.value.length, ...data.result.data)
     tableItemsLength.value = data.result.total
   } catch (error) {
     console.log(error)
@@ -75,6 +112,12 @@ const tableLoadItems = async () => {
     })
   }
   tableLoading.value = false
+}
+tableLoadItems()
+
+const tableApplySearch = () => {
+  tablePage.value = 1
+  tableLoadItems()
 }
 
 </script>
