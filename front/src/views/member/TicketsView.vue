@@ -11,9 +11,9 @@
               <v-list-item v-bind="props" title="我的票券"></v-list-item>
             </template>
             <v-list-item>
-              <v-row>
+              <v-row class="pt-2">
                 <v-col cols="6">
-                  <v-btn color="green" @click="openDialog">新增票券</v-btn>
+                  <v-btn color="green" @click="openDialog()">新增票券</v-btn>
                 </v-col>
                 <v-col cols="6">
                   <v-text-field
@@ -103,8 +103,20 @@ const createSnackbar = useSnackbar()
 const dialog = ref(false)
 const dialogId = ref('')
 
-const openDialog = () => {
-  dialogId.value = ''
+const openDialog = (item) => {
+  if (item) {
+    dialogId.value = item._id
+    name.value.value = item.name
+    performer.value.value = item.performer
+    originalPrice.value.value = item.originalPrice
+    price.value.value = item.price
+    categoryCountry.value.value = item.categoryCountry
+    categoryGroup.value.value = item.categoryGroup
+    sell.value.value = item.sell
+    description.value.value = item.description
+  } else {
+    dialogId.value = ''
+  }
   dialog.value = true
 }
 
@@ -170,16 +182,29 @@ const sell = useField('sell')
 
 const submit = handleSubmit(async (values) => {
   try {
-    await apiAuth.post('/tickets', {
-      name: values.name,
-      performer: values.performer,
-      originalPrice: values.originalPrice,
-      price: values.price,
-      description: values.description,
-      categoryCountry: values.categoryCountry,
-      categoryGroup: values.categoryGroup,
-      sell: values.sell
-    })
+    if (dialogId.value === '') {
+      await apiAuth.post('/tickets', {
+        name: values.name,
+        performer: values.performer,
+        originalPrice: values.originalPrice,
+        price: values.price,
+        description: values.description,
+        categoryCountry: values.categoryCountry,
+        categoryGroup: values.categoryGroup,
+        sell: values.sell
+      })
+    } else {
+      await apiAuth.patch('/tickets/' + dialogId.value, {
+        name: values.name,
+        performer: values.performer,
+        originalPrice: values.originalPrice,
+        price: values.price,
+        description: values.description,
+        categoryCountry: values.categoryCountry,
+        categoryGroup: values.categoryGroup,
+        sell: values.sell
+      })
+    }
     createSnackbar({
       text: dialogId.value === '' ? '新增成功' : '編輯成功',
       showCloseButton: false,
@@ -190,6 +215,7 @@ const submit = handleSubmit(async (values) => {
       }
     })
     closeDialog()
+    tableApplySearch()
   } catch (error) {
     console.log(error)
     const text = error?.response?.data?.message || '發生錯誤，請稍後再試'

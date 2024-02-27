@@ -44,7 +44,8 @@ const createSnackbar = useSnackbar()
 const openDialog = (item) => {
   if (item) {
     dialogId.value = item._id
-    name.value.value = item.name
+    seller.value.value = item.seller
+    seller.value.value = item.seller
     price.value.value = item.price
     description.value.value = item.description
     category.value.value = item.category
@@ -68,7 +69,7 @@ const tablePage = ref(1)
 const tableTickets = ref([])
 // 表格欄位設定
 const tableHeaders = [
-  { title: '賣家', key: 'seller.account' },
+  { title: '賣家', align: 'center', sortable: true, key: 'seller' },
   { title: '名稱', align: 'center', sortable: true, key: 'name' },
   { title: '表演者', align: 'center', sortable: true, key: 'performer' },
   { title: '原價', align: 'center', sortable: true, key: 'originalPrice' },

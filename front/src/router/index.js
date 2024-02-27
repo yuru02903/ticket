@@ -102,17 +102,6 @@ const routes = [
               admin: false
             }
           }
-          // ,
-          // {
-          //   path: 'tickets',
-          //   name: 'MemberTickets',
-          //   component: () => import('@/views/member/TicketsView.vue'),
-          //   meta: {
-          //     title: 'GoConcert - 票券管理',
-          //     login: true,
-          //     admin: false
-          //   }
-          // }
         ]
       }
 
